@@ -10,9 +10,9 @@ int main()
     taskList1.printTaskList();
 
     // Test parameterized constructor
-    Task task1("Task 1", 5, 3, "Complete the assignment");
-    Task task2("Task 2", 3, 2, "Prepare for the meeting");
-    Task task3("Task 3", 4, 4, "Code this assignment");
+    Task task1("Task 1", 5 /*, 3*/, "Complete the assignment");
+    Task task2("Task 2", 3 /*, 2*/, "Prepare for the meeting");
+    Task task3("Task 3", 4 /*, 4*/, "Code this assignment");
     TaskList taskList2;
 
     taskList2.addToList(task1);

@@ -175,7 +175,7 @@ void TaskList::printTaskList() const
     {
         std::cout << "- " << curr->data.getName() << " (Priority: "
                   << curr->data.getPriority() << ", Duration: "
-                  << curr->data.getTimeframe() << ") - "
+                  //                  << curr->data.getTimeframe() << ") - "
                   << curr->data.getDescription() << " [Status: "
                   << (curr->data.getStatus() == Task::FINISHED ? "Finished" : "Unfinished")
                   << "]" << std::endl;
