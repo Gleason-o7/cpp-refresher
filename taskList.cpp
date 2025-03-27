@@ -262,5 +262,6 @@ void TaskList::printTaskList() const
                   << (curr->data.getStatus() == Task::FINISHED ? "Finished" : "Unfinished")
                   << "]" << std::endl;
         curr = curr->next;
+        i++;
     }
 }
