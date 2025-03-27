@@ -296,6 +296,16 @@ void TaskList::printTaskList() const
 bool TaskList::loadFromCSV(const std::string &fileName)
 {
     std::ifstream inFile(fileName);
+    if (size > 0)
+    {
+        std::cout << "List is not empty, would you like to clear it? (y/n)\n";
+        std::string input;
+        std::cin >> input;
+        if (input == "y" || input == "Y")
+        {
+            clear();
+        }
+    }
     if (!inFile.is_open())
     {
         std::cerr << "Could not open file: " << fileName << std::endl;
@@ -359,4 +369,44 @@ bool TaskList::loadFromCSV(const std::string &fileName)
 
     inFile.close();
     return true;
+}
+
+bool TaskList::saveToCSV(const std::string &fileName) const
+{
+    std::ofstream outFile(fileName);
+    if (!outFile.is_open())
+    {
+        std::cerr << "Could not open file: " << fileName << std::endl;
+        return false;
+    }
+
+    outFile << "Task Name,Priority,Description,Status\n"; // Header
+
+    Node *curr = head;
+    while (curr != nullptr)
+    {
+        outFile << curr->data.getName() << ","
+                << curr->data.getPriority() << ","
+                << curr->data.getDescription() << ","
+                << (curr->data.getStatus() == Task::FINISHED ? "FINISHED" : "UNFINISHED") << "\n";
+        curr = curr->next;
+    }
+
+    outFile.close();
+    return true;
+}
+
+void TaskList::clear()
+{
+    Node *curr = head;
+    while (curr != nullptr)
+    {
+        Node *temp = curr;
+        curr = curr->next;
+        delete temp;
+    }
+
+    head = nullptr;
+    tail = nullptr;
+    size = 0;
 }

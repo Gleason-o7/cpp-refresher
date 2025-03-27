@@ -31,10 +31,8 @@ public:
     int getSize() const;
     void printTaskList() const;
     bool loadFromCSV(const std::string &fileName);
-
-    // Later
-    void saveToCSV(const std::string &fileName) const;
-    void clearList();
+    bool saveToCSV(const std::string &fileName) const;
+    void clear();
 };
 
 #endif

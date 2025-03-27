@@ -37,6 +37,12 @@ void Program::menuLoop()
             printTaskList();
             markTaskFinished();
             break;
+        case 'S':
+            saveToCSV();
+            break;
+        case 'C':
+            clear();
+            break;
         case 'Q':
             std::cout << "Q";
             return;
@@ -55,6 +61,8 @@ void Program::displayMenu()
     std::cout << "(A) Add a task\n";
     std::cout << "(R) Remove a task\n";
     std::cout << "(F) Mark a task finished\n";
+    std::cout << "(S) Save tasks to CSV\n";
+    std::cout << "(C) Clear task list\n";
     std::cout << "(Q) Quit program\n";
 }
 
@@ -183,4 +191,26 @@ void Program::loadFromCSV()
     {
         std::cout << "Failed to load tasks from " << fileName << ".\n";
     }
+}
+
+void Program::saveToCSV()
+{
+    std::string fileName;
+    std::cout << "Enter the name of the CSV file to save tasks to:\n\t>> ";
+    std::cin >> fileName;
+
+    if (list.saveToCSV(fileName))
+    {
+        std::cout << "Tasks saved to " << fileName << std::endl;
+    }
+    else
+    {
+        std::cout << "Failed to save tasks to " << fileName << ".\n";
+    }
+}
+
+void Program::clear()
+{
+    list.clear();
+    std::cout << "Task list cleared.\n";
 }
