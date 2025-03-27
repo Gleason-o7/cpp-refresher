@@ -1,5 +1,7 @@
 #include "taskList.h"
 #include <iostream>
+#include <cctype>  // For isdigit
+#include <sstream> // For stringstream
 
 TaskList::TaskList() : size(0), head(nullptr), tail(nullptr) {};
 
@@ -111,7 +113,7 @@ int TaskList::addToList(const Task &task)
     return ++size;
 }
 
-int TaskList::removeFromList(const std::string &taskName)
+int TaskList::removeFromList(int position, const std::string &taskName)
 {
     // Special case: list is empty
     if (head == nullptr)
@@ -119,51 +121,131 @@ int TaskList::removeFromList(const std::string &taskName)
         return 1;
     }
 
-    Node *curr = head;
-    Node *prev = nullptr;
-
-    // Special case: head is to be removed
-    if (head->data.getName() == taskName)
+    if (position > 0)
     {
-        Node *temp = head;
-        head = head->next;
-        delete temp;
-        size--;
+        Node *curr = head;
+        Node *prev = nullptr;
+        int index = 1;
 
-        if (head == nullptr)
-            tail = nullptr;
+        while (curr != nullptr)
+        {
+            if (index == position)
+            {
+                if (prev == nullptr) // Removing head
+                {
+                    head = head->next;
+                    if (head == nullptr)
+                        tail = nullptr;
+                }
+                else
+                {
+                    prev->next = curr->next;
+                    if (curr == tail)
+                        tail = prev;
+                }
+                delete curr;
+                size--;
+                std::cout << "Task #" << position << " removed.\n";
+                return 0;
+            }
+            prev = curr;
+            curr = curr->next;
+            index++;
+        }
 
-        return 0;
+        std::cout << "Task number out of range.\n";
+        return 1;
     }
-
-    while (curr != nullptr && curr->data.getName() != taskName)
+    // Remove by name
+    else
     {
-        prev = curr;
-        curr = curr->next;
-    }
+        Node *curr = head;
+        Node *prev = nullptr;
 
-    // Node not found
-    if (curr == nullptr)
+        while (curr != nullptr)
+        {
+            if (curr->data.getName() == taskName)
+            {
+                if (prev == nullptr) // Removing head
+                {
+                    head = head->next;
+                    if (head == nullptr)
+                        tail = nullptr;
+                }
+                else
+                {
+                    prev->next = curr->next;
+                    if (curr == tail)
+                        tail = prev;
+                }
+                delete curr;
+                size--;
+                std::cout << "Task \"" << taskName << "\" removed.\n";
+                return 0;
+            }
+            prev = curr;
+            curr = curr->next;
+        }
+        std::cout << "Task not found.\n";
+        return 1;
+    }
+}
+
+int TaskList::markTaskFinished(int position, const std::string &taskName)
+{
+    if (head == nullptr)
     {
         return 1;
     }
 
-    // Remove the node
-    prev->next = curr->next;
+    // Find task by position
+    if (position > 0)
+    {
+        Node *curr = head;
+        int index = 1;
 
-    // Special case: node is tail
-    if (curr == tail)
-        tail = prev;
+        while (curr != nullptr)
+        {
+            if (index == position)
+            {
+                curr->data.setStatus(Task::FINISHED);
+                std::cout << "Task #" << position << " marked as finished.\n";
+                return 0;
+            }
+            curr = curr->next;
+            index++;
+        }
+        std::cout << "Task number out of range.\n";
+    }
 
-    delete curr;
-    size--;
-    return 0;
+    // Find task by name
+    else
+    {
+        Node *curr = head;
+        while (curr != nullptr)
+        {
+            if (curr->data.getName() == taskName)
+            {
+                curr->data.setStatus(Task::FINISHED);
+                std::cout << "\nTask \"" << taskName << "\" marked as finished.\n";
+                return 0;
+            }
+            curr = curr->next;
+        }
+        std::cout << "Task not found.\n";
+    }
+    return 1;
+}
+
+bool TaskList::isEmpty()
+{
+    return size == 0;
 }
 
 void TaskList::printTaskList() const
 {
     Node *curr = head;
-
+    int i = 1;
     if (curr == nullptr)
     {
         std::cout << "The task list is empty." << std::endl;
@@ -173,9 +255,9 @@ void TaskList::printTaskList() const
     std::cout << "Task List:" << std::endl;
     while (curr != nullptr)
     {
-        std::cout << "- " << curr->data.getName() << " (Priority: "
+        std::cout << i << ": " << curr->data.getName() << " (Priority: "
                   << curr->data.getPriority() << ", Duration: "
-                  //                  << curr->data.getTimeframe() << ") - "
+                  << /*curr->data.getTimeframe() << */ ") - "
                   << curr->data.getDescription() << " [Status: "
                   << (curr->data.getStatus() == Task::FINISHED ? "Finished" : "Unfinished")
                   << "]" << std::endl;

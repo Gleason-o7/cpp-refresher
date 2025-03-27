@@ -5,5 +5,7 @@ int main()
 {
     Program todoList;
     todoList.welcome();
+
+    todoList.menuLoop();
     return 0;
 }

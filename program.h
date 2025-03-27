@@ -10,6 +10,11 @@ private:
 public:
     void welcome();
     void menuLoop();
+    void displayMenu();
+    void addTask();
+    void printTaskList();
+    void markTaskFinished();
+    void removeFromList();
 };
 
 #endif

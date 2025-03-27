@@ -23,7 +23,9 @@ public:
 
     // Rest to be implemented
     int addToList(const Task &task);
-    int removeFromList(const std::string &taskName);
+    int removeFromList(int position, const std::string &taskName);
+    int markTaskFinished(int position, const std::string &taskName);
+    bool isEmpty();
 
     // Not to be used, only for verifying results in testList.cpp
     void printTaskList() const;
