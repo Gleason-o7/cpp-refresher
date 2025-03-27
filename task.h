@@ -14,14 +14,13 @@ public:
 private:
     std::string name;
     int priority;
-    // int timeframe;
     std::string description;
     Status status;
 
 public:
     // Constructors
     Task();
-    Task(const std::string &name, int priority /*, int timeframe*/, const std::string &description);
+    Task(const std::string &name, int priority, const std::string &description, Status status = UNFINISHED);
     Task(const Task &taskToCopy);
     Task &operator=(const Task &taskToCopy);
 
@@ -30,14 +29,12 @@ public:
     // Getter functions
     std::string getName() const;
     int getPriority() const;
-    // int getTimeframe() const;
     std::string getDescription() const;
     Status getStatus() const;
 
     // Setter functions
     void setName(const std::string &newName);
     void setPriority(int newPriority);
-    // void setTimeframe(int newTimeframe);
     void setDescription(const std::string &newDescription);
     void setStatus(Status newStatus);
 };

@@ -15,20 +15,26 @@ private:
     Node *tail;
 
 public:
+    // Constructors
     TaskList();
     TaskList(const TaskList &listToCopy);
     TaskList &operator=(const TaskList &listToCopy);
 
+    // Destructor
     ~TaskList();
 
-    // Rest to be implemented
+    // Methods
     int addToList(const Task &task);
     int removeFromList(int position, const std::string &taskName);
     int markTaskFinished(int position, const std::string &taskName);
     bool isEmpty();
-
-    // Not to be used, only for verifying results in testList.cpp
+    int getSize() const;
     void printTaskList() const;
+    bool loadFromCSV(const std::string &fileName);
+
+    // Later
+    void saveToCSV(const std::string &fileName) const;
+    void clearList();
 };
 
 #endif

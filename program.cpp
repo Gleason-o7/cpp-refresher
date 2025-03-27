@@ -3,11 +3,13 @@
 #include <iostream>
 #include "program.h"
 
+// Display welcome message
 void Program::welcome()
 {
     std::cout << "Welcome to your task manager.\n";
 }
 
+// Main menu loop
 void Program::menuLoop()
 {
     char input;
@@ -19,6 +21,9 @@ void Program::menuLoop()
         system("clear");
         switch (toupper(input))
         {
+        case 'L':
+            loadFromCSV();
+            break;
         case 'D':
             printTaskList();
             break;
@@ -32,9 +37,6 @@ void Program::menuLoop()
             printTaskList();
             markTaskFinished();
             break;
-        case 'L':
-            std::cout << "L";
-            break;
         case 'Q':
             std::cout << "Q";
             return;
@@ -44,22 +46,25 @@ void Program::menuLoop()
     } while (true);
 }
 
+// Display menu options
 void Program::displayMenu()
 {
     std::cout << "\nPick an option from the menu below:\n";
+    std::cout << "(L) Load tasks from CSV\n";
     std::cout << "(D) Display list of tasks\n";
     std::cout << "(A) Add a task\n";
     std::cout << "(R) Remove a task\n";
     std::cout << "(F) Mark a task finished\n";
-    std::cout << "(L) Mark a list of tasks finished\n";
     std::cout << "(Q) Quit program\n";
 }
 
+// Print the task list
 void Program::printTaskList()
 {
     list.printTaskList();
 }
 
+// Remove a task from the list
 void Program::removeFromList()
 {
     if (list.isEmpty())
@@ -101,6 +106,7 @@ void Program::removeFromList()
     }
 }
 
+// Mark a task as finished
 void Program::markTaskFinished()
 {
     if (list.isEmpty())
@@ -141,6 +147,7 @@ void Program::markTaskFinished()
     }
 }
 
+// Add a new task to the list
 void Program::addTask()
 {
 
@@ -158,4 +165,22 @@ void Program::addTask()
 
     Task newTask(tempName, tempPriority, tempDescription);
     list.addToList(newTask);
+}
+
+// Load tasks from a CSV file
+void Program::loadFromCSV()
+{
+    std::string fileName;
+    std::cout << "Enter the name of the CSV file to load tasks from:\n\t>> ";
+    std::cin >> fileName;
+
+    if (list.loadFromCSV(fileName))
+    {
+        std::cout << "Tasks loaded from " << fileName << std::endl;
+        std::cout << "Total tasks loaded: " << list.getSize() << std::endl;
+    }
+    else
+    {
+        std::cout << "Failed to load tasks from " << fileName << ".\n";
+    }
 }

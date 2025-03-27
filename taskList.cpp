@@ -1,8 +1,10 @@
 #include "taskList.h"
 #include <iostream>
-#include <cctype>  // For isdigit
 #include <sstream> // For stringstream
+#include <fstream>
+#include <stdexcept>
 
+// Constructors
 TaskList::TaskList() : size(0), head(nullptr), tail(nullptr) {};
 
 TaskList::TaskList(const TaskList &listToCopy) : size(listToCopy.size)
@@ -91,6 +93,12 @@ TaskList::~TaskList()
     }
 }
 
+// Methods
+
+// Adds a task to the end of the list
+// Returns the new size of the list
+// If the list was empty, it updates the tail pointer
+// Returns 0 on success, 1 on failure
 int TaskList::addToList(const Task &task)
 {
     Node *newTail = new Node;
@@ -113,6 +121,10 @@ int TaskList::addToList(const Task &task)
     return ++size;
 }
 
+// Removes a task from the list
+// If position is greater than 0, it removes by position
+// If position is 0 or less, it removes by name
+// Returns 0 on success, 1 on failure
 int TaskList::removeFromList(int position, const std::string &taskName)
 {
     // Special case: list is empty
@@ -121,6 +133,7 @@ int TaskList::removeFromList(int position, const std::string &taskName)
         return 1;
     }
 
+    // Remove by position
     if (position > 0)
     {
         Node *curr = head;
@@ -156,6 +169,7 @@ int TaskList::removeFromList(int position, const std::string &taskName)
         std::cout << "Task number out of range.\n";
         return 1;
     }
+
     // Remove by name
     else
     {
@@ -191,6 +205,10 @@ int TaskList::removeFromList(int position, const std::string &taskName)
     }
 }
 
+// Marks a task as finished
+// If position is greater than 0, it marks by position
+// If position is 0 or less, it marks by name
+// Returns 0 on success, 1 on failure
 int TaskList::markTaskFinished(int position, const std::string &taskName)
 {
     if (head == nullptr)
@@ -237,11 +255,19 @@ int TaskList::markTaskFinished(int position, const std::string &taskName)
     return 1;
 }
 
+// Checks if the list is empty
 bool TaskList::isEmpty()
 {
     return size == 0;
 }
 
+// Returns the size of the list
+int TaskList::getSize() const
+{
+    return size;
+}
+
+// prints the task list
 void TaskList::printTaskList() const
 {
     Node *curr = head;
@@ -264,4 +290,73 @@ void TaskList::printTaskList() const
         curr = curr->next;
         i++;
     }
+}
+
+// Loads tasks from a CSV file
+bool TaskList::loadFromCSV(const std::string &fileName)
+{
+    std::ifstream inFile(fileName);
+    if (!inFile.is_open())
+    {
+        std::cerr << "Could not open file: " << fileName << std::endl;
+        return false;
+    }
+
+    std::string line;
+    std::getline(inFile, line); // Skip header line
+    if (line.empty())
+    {
+        std::cerr << "Empty file: " << fileName << std::endl;
+        return false;
+    }
+
+    // Read each line and parse the task details
+    while (std::getline(inFile, line))
+    {
+        std::stringstream ss(line);
+        std::string name, priorityStr, description, statusStr;
+        int priority;
+        Task::Status status = Task::UNFINISHED;
+
+        if (std::getline(ss, name, ',') && std::getline(ss, priorityStr, ',') && std::getline(ss, description, ',') && std::getline(ss, statusStr))
+        {
+
+            // Convert priority
+            try
+            {
+                priority = std::stoi(priorityStr);
+            }
+            catch (const std::invalid_argument &e)
+            {
+                std::cerr << "Invalid priority value: " << priorityStr << std::endl;
+                return false;
+            }
+
+            // Convert status string to enum
+            if (statusStr == "FINISHED")
+            {
+                status = Task::FINISHED;
+            }
+            else if (statusStr == "UNFINISHED")
+            {
+                status = Task::UNFINISHED;
+            }
+            else
+            {
+                std::cerr << "Invalid status in file: " << statusStr << std::endl;
+                return false; // Skip this line
+            }
+
+            Task task(name, priority, description, status);
+            addToList(task);
+        }
+        else
+        {
+            std::cerr << "Error parsing line: " << line << std::endl;
+            return false; // Skip this line
+        }
+    }
+
+    inFile.close();
+    return true;
 }

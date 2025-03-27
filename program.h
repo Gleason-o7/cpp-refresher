@@ -15,6 +15,7 @@ public:
     void printTaskList();
     void markTaskFinished();
     void removeFromList();
+    void loadFromCSV();
 };
 
 #endif
