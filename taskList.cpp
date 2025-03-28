@@ -3,6 +3,7 @@
 #include <sstream> // For stringstream
 #include <fstream>
 #include <stdexcept>
+#include <iomanip>
 
 // Constructors
 TaskList::TaskList() : size(0), head(nullptr), tail(nullptr) {};
@@ -272,6 +273,9 @@ void TaskList::printTaskList() const
 {
     Node *curr = head;
     int i = 1;
+    int maxNameLength = 0;
+    int maxDescriptionLength = 0;
+
     if (curr == nullptr)
     {
         std::cout << "The task list is empty." << std::endl;
@@ -279,17 +283,27 @@ void TaskList::printTaskList() const
     }
 
     std::cout << "Task List:" << std::endl;
+    std::cout << "| * |>------------------------------<| * |>--------------<| * |>---------------------<| * |" << std::endl;
+    std::cout << "| * |" << std::setw(5) << std::right << "No" << ": "
+              << std::setw(25) << std::left << "Task Name"
+              << "| * | Priority: " << std::setw(4) << "Prio"
+              << " | * | Status : " << std::setw(12) << "Status"
+              << " | * | "
+              << std::endl;
+    std::cout << "| * |>------------------------------<| * |>--------------<| * |>---------------------<| * |" << std::endl;
     while (curr != nullptr)
     {
-        std::cout << i << ": " << curr->data.getName() << " (Priority: "
-                  << curr->data.getPriority() << ", Duration: "
-                  << /*curr->data.getTimeframe() << */ ") - "
-                  << curr->data.getDescription() << " [Status: "
-                  << (curr->data.getStatus() == Task::FINISHED ? "Finished" : "Unfinished")
-                  << "]" << std::endl;
+        std::cout << "| * |"
+                  << std::setw(5) << std::right << i << ": "
+                  << std::setw(25) << std::left << curr->data.getName()
+                  << "| * | Priority: " << std::setw(4) << curr->data.getPriority()
+                  << " | * | Status : " << std::setw(12) << (curr->data.getStatus() == Task::FINISHED ? " Finished " : " Unfinished ")
+                  << " | * | "
+                  << std::endl;
         curr = curr->next;
         i++;
     }
+    std::cout << "| * |>------------------------------<| * |>--------------<| * |>---------------------<| * |" << std::endl;
 }
 
 // Loads tasks from a CSV file
